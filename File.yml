@@ -1,0 +1,30 @@
+---
+ - hosts: all
+   become: yes
+   name: fileinline module example 
+
+   tasks:
+   - name: make changes inline  
+     lineinfile:
+       path: /tmp/sudoers
+       state: present
+       regexp: '^%wheel\s'
+       line: '%wheel ALL=(ALL) NOPASSWD: ALL'
+   - name:  add line at EOF 
+     lineinfile:
+       path: /tmp/sudoers
+       line: 'apache ALL=(ALL) ALL '
+
+   - name: add line after string 
+     lineinfile:
+       path: /tmp/sudoers
+       regexp: '^ ## cdrom'
+       insertafter: '^## cdrom ' 
+       line: 'thiru ALL=(ALL) ALL'
+   - name: add line before a string
+     lineinfile:
+       path: /tmp/sudoers
+       regexp: '^ ## Allow root'
+       insertbefore: '^## Allow root'
+       line: 'user32 ALL=(ALL) ALL'
+       validate: 'visudo -cf %s'
